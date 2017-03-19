@@ -10,10 +10,20 @@
         $(function() {
             const PROMPT = 'Maude>';
             const MAUDE = 'Maude> ';
+            const LOAD = 'load';
+            const COMANDO_NO_VALIDO = 'Comando no valido: ';
 
             var socket = io.connect('http://localhost:9090');
             var terminal = $('#terminal').terminal(function(command, terminal) {
-                socket.emit('stdin', command);
+                var cmd = command.substr(0, LOAD.length);
+                console.log(cmd);
+
+                if (cmd == LOAD) {
+                    terminal.error(COMANDO_NO_VALIDO + command);
+                } else {
+                    socket.emit('stdin', command);
+                }
+
             }, {
                 greetings: '',
                 prompt: PROMPT,
