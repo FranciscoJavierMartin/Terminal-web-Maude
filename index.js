@@ -3,6 +3,8 @@ var http = require('http')
   , fs = require('fs')
   , spawn = require('child_process').spawn;
 
+var puerto=9090;
+
 var app = http.createServer(function(req, res) {
   [ 
       '/index.html'
@@ -21,7 +23,7 @@ var app = http.createServer(function(req, res) {
   })
 });
 
-app.listen(8080);
+app.listen(puerto);
 
 io.listen(app).sockets.on('connection', function (socket) {
   var shell = spawn('/bin/bash')
