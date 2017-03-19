@@ -1,3 +1,15 @@
+#terminal{
+  display: block;
+  overflow-y: auto;
+  height: 350px;
+  max-width: 1000px;
+  padding: 15px;
+  position: relative;
+  margin: auto;
+  word-wrap: break-word;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, .66);
+}
+
 .terminal .clipboard {
   position: absolute;
   bottom: 0;
@@ -8,12 +20,12 @@
 }
 .cmd > .clipboard {
   position: fixed;
-}
+}/*
 .terminal {
   padding: 10px;
   position: relative;
   overflow: hidden;
-}
+}*/
 .cmd {
   padding: 0;
   margin: 0;
