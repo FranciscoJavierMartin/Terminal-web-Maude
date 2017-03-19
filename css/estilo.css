@@ -9,3 +9,17 @@
 body {
     background: lightblue;
 }
+
+#menu {
+    text-align: center;
+    padding: 10px;
+}
+
+.boton {
+    font-size: 20pt;
+    border-radius: 5px;
+    border: 2px solid;
+    padding: 7px;
+    text-decoration: none;
+    color: blue;
+}
