@@ -11,6 +11,7 @@
             const PROMPT = 'Maude>';
             const MAUDE = 'Maude> ';
             const LOAD = 'load';
+            const QUIT = 'quit';
             const COMANDO_NO_VALIDO = 'Comando no valido: ';
 
             var socket = io.connect('http://localhost:9090');
@@ -18,7 +19,7 @@
                 var cmd = command.substr(0, LOAD.length);
                 console.log(cmd);
 
-                if (cmd == LOAD) {
+                if (cmd == LOAD || cmd == QUIT) {
                     terminal.error(COMANDO_NO_VALIDO + command);
                 } else {
                     socket.emit('stdin', command);
