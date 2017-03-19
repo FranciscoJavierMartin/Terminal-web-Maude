@@ -1,3 +1,11 @@
 #files {
     display: none;
 }
+
+#fork {
+    border: 0px;
+}
+
+body {
+    background: lightblue;
+}

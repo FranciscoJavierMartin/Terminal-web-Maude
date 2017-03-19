@@ -3,6 +3,7 @@
 
 <head>
     <title>Web shell</title>
+    <meta charset="UTF-8">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script src="/js/jquery.terminal.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -63,6 +64,11 @@
 </head>
 
 <body>
+    <div id="menu">
+        <a class="boton" href="https://es.wikipedia.org/wiki/Maude_(lenguaje_de_programaci%C3%B3n)">¿Que es?</a>
+        <a class="boton" href="http://maude.cs.illinois.edu/w/index.php?title=The_Maude_System">Página oficial</a>
+        <a class="boton" href="http://maude.cs.illinois.edu/w/images/e/e0/Maude-2.7.1-manual.pdf">Manual</a>
+    </div>
     <div id="terminal"></div>
     <input id="files" type="file" accept=".nat" multiple=false/>
     <a id="fileupload" href="javascript:void(0)">Subir naturaleza</a>
