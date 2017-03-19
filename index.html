@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Web shell</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script src="/js/jquery.terminal.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $(function() {
+            const PROMPT = 'Maude>';
+            const MAUDE = 'Maude> ';
+            const LOAD = 'load';
+            const QUIT = 'quit';
+            const COMANDO_NO_VALIDO = 'Comando no valido: ';
+
+            var socket = io.connect('http://localhost:9090');
+            var terminal = $('#terminal').terminal(function(command, terminal) {
+                var cmd = command.substr(0, LOAD.length);
+                console.log(cmd);
+
+                if (cmd == LOAD || cmd == QUIT) {
+                    terminal.error(COMANDO_NO_VALIDO + command);
+                } else {
+                    socket.emit('stdin', command);
+                }
+
+            }, {
+                greetings: '',
+                prompt: PROMPT,
+                exit: false
+            });
+            socket.on('stdout', function(data) {
+                var salida = String(data);
+
+                if (salida.endsWith(MAUDE)) {
+                    salida = salida.substr(0, salida.length - MAUDE.length);
+                }
+
+                terminal.echo(salida);
+            });
+            socket.on('stderr', function(data) {
+                terminal.error(String(data));
+            });
+            socket.on('disconnect', function() {
+                terminal.disable();
+            });
+            socket.on('enable', function() {
+                terminal.enable();
+            });
+            socket.on('disable', function() {
+                terminal.disable();
+            });
+        });
+    </script>
+    <link type="text/css" href="/css/jquery.terminal.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="terminal"></div>
+</body>
+
+</html>
