@@ -86,8 +86,10 @@
             function introducir_comando(command) {
                 var cmd = command.substr(0, LOAD.length);
 
-                if (cmd == LOAD || cmd == QUIT) {
+                if (cmd == LOAD) {
                     terminal.error(COMANDO_NO_VALIDO + command);
+                } else if (cmd == QUIT) {
+                    location.reload();
                 } else {
                     socket.emit('stdin', command);
                 }

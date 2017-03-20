@@ -6,7 +6,7 @@ var http = require('http'),
 //Puerto al que se conecta el servidor
 var puerto = 9090;
 
-//Tiempo de expiracion de un comando
+//Tiempo de expiracion de un comando (en milisegundos)
 const timer_ms = 5000;
 
 var app = http.createServer(function(req, res) {
