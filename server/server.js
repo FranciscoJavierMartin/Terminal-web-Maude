@@ -107,7 +107,7 @@ io.on('connection', function(socket) {
     shell.on('exit', function() {
         console.log('exit');
         socket.disconnect();
-    })
+    });
 
     shell['stdout'].setEncoding('ascii');
     shell['stdout'].on('data', function(data) {

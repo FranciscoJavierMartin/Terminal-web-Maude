@@ -28,9 +28,8 @@
 
             var socket = io.connect('http://localhost:9090');
             var terminal = $('#terminal').terminal(function(command, terminal) {
-                var cmd = quitar_espacios_inicio(command);
-                introducir_comando2(cmd);
-
+                //var cmd = quitar_espacios_inicio(command);
+                introducir_comando(command);
             }, {
                 greetings: '',
                 prompt: PROMPT,
@@ -45,16 +44,15 @@
 
                 terminal.echo(salida);
             });
-            socket.on('stderr', function(data) {
-                terminal.error(String(data));
+            socket.on('stderr', function(salida) {
+                terminal.error(salida);
             });
             socket.on('disconnect', function() {
 
-                if (alert('Conexion perdida')) {
+                if (!alert('Conexion perdida')) {
                     location.reload();
                 }
 
-                //terminal.disable();
             });
             socket.on('enable', function() {
                 terminal.enable();
@@ -94,22 +92,6 @@
                 alert("Your browser does not support File API");
             }
 
-
-            function introducir_comando(command) {
-                var cmd = command.substr(0, LOAD.length);
-                var cmd0 = command.substr(0, QUIT.length);
-                var cmd1 = command.substr(0, CHANGE_DIRECTORY.length);
-                var cmd2 = command.substr(0, LIST.length);
-
-                if (cmd == LOAD || cmd1 == CHANGE_DIRECTORY || cmd2 == LIST) {
-                    terminal.error(COMANDO_NO_VALIDO + command);
-                } else if (cmd0 == QUIT) {
-                    location.reload();
-                } else {
-                    socket.emit('stdin', command);
-                }
-            }
-
             //True si esta en entrada no permitida
             function validar_comando(command) {
                 var res = false;
@@ -123,8 +105,9 @@
                 return res;
             }
 
-            function introducir_comando2(command) {
-
+            function introducir_comando(command) {
+                command = quitar_tabuladores_inicio(command);
+                command = quitar_espacios_inicio(command);
                 if (validar_comando(command)) {
                     terminal.error(COMANDO_NO_VALIDO + command);
                 } else if (QUIT == command.substr(0, QUIT.length)) {
@@ -140,6 +123,20 @@
 
                 for (i = 0; i < a.length; i++) {
                     if (a[i] != ' ') {
+                        break;
+                    }
+                }
+
+                var salida = command.substr(i, command.lengt);
+                return salida;
+            }
+
+            function quitar_tabuladores_inicio(command) {
+                var a = command.slice('');
+                var i;
+
+                for (i = 0; i < a.length; i++) {
+                    if (a[i] != '\t') {
                         break;
                     }
                 }
