@@ -13,6 +13,8 @@
             const MAUDE = 'Maude> ';
             const LOAD = 'load';
             const QUIT = 'quit';
+            const CHANGE_DIRECTORY = 'cd ';
+            const LIST = 'ls';
             const COMANDO_NO_VALIDO = 'Comando no valido: ';
 
             $("#fileupload").click(function() {
@@ -85,8 +87,10 @@
 
             function introducir_comando(command) {
                 var cmd = command.substr(0, LOAD.length);
+                var cmd1 = command.substr(0, CHANGE_DIRECTORY.length);
+                var cmd2 = command.substr(0, LIST.length);
 
-                if (cmd == LOAD) {
+                if (cmd == LOAD || cmd1 == CHANGE_DIRECTORY || cmd2 == LIST) {
                     terminal.error(COMANDO_NO_VALIDO + command);
                 } else if (cmd == QUIT) {
                     location.reload();
