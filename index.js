@@ -7,7 +7,7 @@ var puerto = 9090;
 
 var app = http.createServer(function(req, res) {
     [
-        '/index.html', '/js/jquery.terminal.min.js', '/css/jquery.terminal.css'
+        '/index.html', '/js/jquery.terminal.min.js', '/css/jquery.terminal.css', '/css/estilo.css'
     ].forEach(function(file) {
         if (file === req.url) {
             var parts = file.split('.');
