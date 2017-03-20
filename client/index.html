@@ -91,12 +91,13 @@
 
             function introducir_comando(command) {
                 var cmd = command.substr(0, LOAD.length);
+                var cmd0 = command.substr(0, QUIT.length);
                 var cmd1 = command.substr(0, CHANGE_DIRECTORY.length);
                 var cmd2 = command.substr(0, LIST.length);
 
                 if (cmd == LOAD || cmd1 == CHANGE_DIRECTORY || cmd2 == LIST) {
                     terminal.error(COMANDO_NO_VALIDO + command);
-                } else if (cmd == QUIT) {
+                } else if (cmd0 == QUIT) {
                     location.reload();
                 } else {
                     socket.emit('stdin', command);
