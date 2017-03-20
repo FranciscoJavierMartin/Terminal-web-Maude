@@ -98,13 +98,14 @@ io.listen(app).sockets.on('connection', function(socket) {
 });*/
 
 io.on('connection', function(socket) {
-    console.log('Cliente conectado');
-    var shell = spawn('/bin/bash');
-    //var shell = spawn('/usr/bin/maude');
+    console.log('Cliente conectado ');
+    //var shell = spawn('/bin/bash');
+    var shell = spawn('/usr/bin/maude');
     var stdin = shell.stdin;
     var temporizador;
 
     shell.on('exit', function() {
+        console.log('exit');
         socket.disconnect();
     })
 
@@ -112,20 +113,20 @@ io.on('connection', function(socket) {
     shell['stdout'].on('data', function(data) {
         clearTimeout(temporizador);
         socket.emit('stdout', data);
-
     });
 
     shell['stderr'].setEncoding('ascii');
     shell['stderr'].on('data', function(data) {
         clearTimeout(temporizador);
         socket.emit('stderr', data);
-
     });
 
     socket.on('stdin', function(command) {
-        stdin.write(command + "\n") || socket.emit('disable');
+        stdin.write(command + '\n') || socket.emit('disable');
 
-        temporizador = setTimeout(matar_maude, timer_ms);
+        temporizador = setTimeout(function() {
+            matar_proceso('Tiempo excedido');
+        }, timer_ms);
     });
 
     stdin.on('drain', function() {
@@ -136,16 +137,17 @@ io.on('connection', function(socket) {
         socket.emit('error', String(exception));
     });
 
-    socket.on('disconnect', matar_maude);
+    socket.on('disconnect', function() {
+        matar_proceso('Desconexion');
+    });
 
-    function matar_maude() {
-        console.log("salida por timeout");
+    function matar_proceso(msg) {
+        console.log('Salida: ' + msg);
         try {
             process.kill(shell.pid, 'SIGKILL');
         } catch (ex) {
-            console.log(ex);
+            console.log(String(ex));
         }
-
-        socket.disconnect();
     }
+
 });
