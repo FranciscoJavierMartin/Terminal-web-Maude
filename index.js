@@ -3,9 +3,16 @@ var http = require('http'),
     fs = require('fs'),
     spawn = require('child_process').spawn;
 
+//Puerto al que se conecta el servidor
 var puerto = 9090;
 
+//Tiempo de expiracion de un comando
+const timer_ms = 5000;
+
 var app = http.createServer(function(req, res) {
+
+    console.log('Servidor funcionando en http://localhost:' + puerto);
+
     [
         '/index.html', '/js/jquery.terminal.min.js', '/css/jquery.terminal.css', '/css/estilo.css'
     ].forEach(function(file) {
@@ -24,8 +31,12 @@ var app = http.createServer(function(req, res) {
 app.listen(puerto);
 
 io.listen(app).sockets.on('connection', function(socket) {
+
+    console.log('Cliente conectado');
+
     var shell = spawn('/usr/bin/maude'),
         stdin = shell.stdin;
+    var temporizador;
 
     shell.on('exit', function() {
         socket.disconnect();
@@ -33,16 +44,22 @@ io.listen(app).sockets.on('connection', function(socket) {
 
     shell['stdout'].setEncoding('ascii');
     shell['stdout'].on('data', function(data) {
+        clearTimeout(temporizador);
         socket.emit('stdout', data);
+
     });
 
     shell['stderr'].setEncoding('ascii');
     shell['stderr'].on('data', function(data) {
+        clearTimeout(temporizador);
         socket.emit('stderr', data);
+
     });
 
     socket.on('stdin', function(command) {
         stdin.write(command + "\n") || socket.emit('disable');
+
+        temporizador = setTimeout(matar_maude, timer_ms);
     });
 
     stdin.on('drain', function() {
@@ -52,4 +69,17 @@ io.listen(app).sockets.on('connection', function(socket) {
     stdin.on('error', function(exception) {
         socket.emit('error', String(exception));
     });
+
+    socket.on('disconnect', matar_maude);
+
+    function matar_maude() {
+        console.log("salida por timeout");
+        try {
+            process.kill(shell.pid, 'SIGKILL');
+        } catch (ex) {
+            console.log(ex);
+        }
+
+        socket.disconnect();
+    }
 });
