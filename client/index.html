@@ -17,13 +17,19 @@
             const LIST = 'ls';
             const COMANDO_NO_VALIDO = 'Comando no valido: ';
 
+            var entradas_no_permitidas = [];
+            entradas_no_permitidas.push(LOAD);
+            entradas_no_permitidas.push(CHANGE_DIRECTORY);
+            entradas_no_permitidas.push(LIST);
+
             $("#fileupload").click(function() {
                 $("#files").click();
             });
 
             var socket = io.connect('http://localhost:9090');
             var terminal = $('#terminal').terminal(function(command, terminal) {
-                introducir_comando(command);
+                var cmd = quitar_espacios_inicio(command);
+                introducir_comando2(cmd);
 
             }, {
                 greetings: '',
@@ -102,6 +108,44 @@
                 } else {
                     socket.emit('stdin', command);
                 }
+            }
+
+            //True si esta en entrada no permitida
+            function validar_comando(command) {
+                var res = false;
+                var cad;
+
+                for (var i = 0; i < entradas_no_permitidas.length; i++) {
+                    cad = command.substr(0, entradas_no_permitidas[i].length);
+                    res = res || (cad == entradas_no_permitidas[i]);
+                }
+
+                return res;
+            }
+
+            function introducir_comando2(command) {
+
+                if (validar_comando(command)) {
+                    terminal.error(COMANDO_NO_VALIDO + command);
+                } else if (QUIT == command.substr(0, QUIT.length)) {
+                    location.reload();
+                } else {
+                    socket.emit('stdin', command);
+                }
+            }
+
+            function quitar_espacios_inicio(command) {
+                var a = command.slice('');
+                var i;
+
+                for (i = 0; i < a.length; i++) {
+                    if (a[i] != ' ') {
+                        break;
+                    }
+                }
+
+                var salida = command.substr(i, command.lengt);
+                return salida;
             }
         });
     </script>
