@@ -41,6 +41,7 @@
                 terminal.error(String(data));
             });
             socket.on('disconnect', function() {
+                alert('Conexion perdida');
                 terminal.disable();
             });
             socket.on('enable', function() {
@@ -69,9 +70,7 @@
 
                             for (var j = 0; j < abc.length; j++) {
                                 introducir_comando(abc[j]);
-
                             }
-
                         });
 
                         //Read the text file
