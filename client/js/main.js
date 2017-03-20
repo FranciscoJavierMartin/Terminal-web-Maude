@@ -18,7 +18,6 @@
 
      var socket = io.connect('http://localhost:9090');
      var terminal = $('#terminal').terminal(function(command, terminal) {
-         //var cmd = quitar_espacios_inicio(command);
          introducir_comando(command);
      }, {
          greetings: '',
@@ -58,8 +57,8 @@
              var files = event.target.files; //FileList object
              for (var i = 0; i < files.length; i++) {
                  var file = files[i];
-                 var picReader = new FileReader();
-                 picReader.addEventListener("load", function(event) {
+                 var fileReader = new FileReader();
+                 fileReader.addEventListener("load", function(event) {
                      var abc = event.target.result.split('\n');
                      for (var j = 0; j < abc.length; j++) {
 
@@ -67,7 +66,7 @@
                      }
                  });
                  //Read the text file
-                 picReader.readAsText(file);
+                 fileReader.readAsText(file);
              }
          });
      } else {
