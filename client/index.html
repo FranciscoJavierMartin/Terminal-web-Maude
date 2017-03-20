@@ -4,15 +4,17 @@
 <head>
     <title>Terminal web Maude</title>
     <meta charset="UTF-8">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-    <script src="/js/jquery.terminal.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.terminal.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script>
         $(function() {
             const PROMPT = 'Maude>';
             const MAUDE = 'Maude> ';
             const LOAD = 'load';
             const QUIT = 'quit';
+            const CHANGE_DIRECTORY = 'cd ';
+            const LIST = 'ls';
             const COMANDO_NO_VALIDO = 'Comando no valido: ';
 
             $("#fileupload").click(function() {
@@ -41,8 +43,12 @@
                 terminal.error(String(data));
             });
             socket.on('disconnect', function() {
-                alert('Conexion perdida');
-                terminal.disable();
+
+                if (alert('Conexion perdida')) {
+                    location.reload();
+                }
+
+                //terminal.disable();
             });
             socket.on('enable', function() {
                 terminal.enable();
@@ -85,10 +91,13 @@
 
             function introducir_comando(command) {
                 var cmd = command.substr(0, LOAD.length);
+                var cmd0 = command.substr(0, QUIT.length);
+                var cmd1 = command.substr(0, CHANGE_DIRECTORY.length);
+                var cmd2 = command.substr(0, LIST.length);
 
-                if (cmd == LOAD) {
+                if (cmd == LOAD || cmd1 == CHANGE_DIRECTORY || cmd2 == LIST) {
                     terminal.error(COMANDO_NO_VALIDO + command);
-                } else if (cmd == QUIT) {
+                } else if (cmd0 == QUIT) {
                     location.reload();
                 } else {
                     socket.emit('stdin', command);
@@ -110,7 +119,7 @@
     </div>
     <div id="terminal"></div>
 
-    <a id="fork" href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+    <a id="fork" href="https://github.com/FranciscoJavierMartin/Terminal-web-Maude"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
             alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
 </body>
 
