@@ -27,7 +27,7 @@ io.on('connection', function(socket) {
     //var shell = spawn('/bin/bash');
     var shell = spawn('/usr/bin/maude');
     var stdin = shell.stdin;
-    var temporizador;
+    var temporizadores = [];
 
     shell.on('exit', function() {
         console.log('exit');
@@ -36,26 +36,30 @@ io.on('connection', function(socket) {
 
     shell['stdout'].setEncoding('ascii');
     shell['stdout'].on('data', function(data) {
-        clearTimeout(temporizador);
+        clearTimeout(temporizadores.shift());
         socket.emit('stdout', data);
     });
 
     shell['stderr'].setEncoding('ascii');
     shell['stderr'].on('data', function(data) {
-        clearTimeout(temporizador);
+        clearTimeout(temporizadores.shift());
         socket.emit('stderr', data);
     });
 
     socket.on('stdin', function(command) {
         stdin.write(command + '\n') || socket.emit('disable');
 
-        temporizador = setTimeout(function() {
+        temporizadores.push(setTimeout(function() {
             matar_proceso('Tiempo excedido');
-        }, timer_ms);
+        }, timer_ms));
     });
 
     socket.on('archivo', function(command) {
         stdin.write(command + '\n') || socket.emit('disable');
+
+        temporizadores.push(setTimeout(function() {
+            matar_proceso('Tiempo excedido');
+        }, timer_ms));
     });
 
     stdin.on('drain', function() {
