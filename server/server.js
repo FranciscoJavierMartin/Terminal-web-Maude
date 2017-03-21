@@ -1,14 +1,20 @@
+var opciones = {
+    shell: true
+}
+
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-var spawn = require('child_process').spawn;
+var spawn = require('child_process', ['', opciones]).spawn;
 
 //Puerto al que se conecta el servidor
 const puerto = 9090;
 
 //Tiempo de expiracion de un comando (en milisegundos)
 const timer_ms = 5000;
+
+
 
 app.use(express.static('client'));
 
@@ -48,6 +54,10 @@ io.on('connection', function(socket) {
         }, timer_ms);
     });
 
+    socket.on('archivo', function(command) {
+        stdin.write(command + '\n') || socket.emit('disable');
+    });
+
     stdin.on('drain', function() {
         socket.emit('enable');
     });
@@ -65,7 +75,7 @@ io.on('connection', function(socket) {
         try {
             process.kill(shell.pid, 'SIGKILL');
         } catch (ex) {
-            console.log(String(ex));
+            console.log('Excep: ' + String(ex));
         }
     }
 

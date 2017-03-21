@@ -18,7 +18,7 @@
 
      var socket = io.connect('http://localhost:9090');
      var terminal = $('#terminal').terminal(function(command, terminal) {
-         introducir_comando(command);
+         introducir_comando(command, 'stdin');
      }, {
          greetings: '',
          prompt: PROMPT,
@@ -62,7 +62,7 @@
                      var abc = event.target.result.split('\n');
                      for (var j = 0; j < abc.length; j++) {
 
-                         introducir_comando(abc[j]);
+                         introducir_comando(abc[j], 'archivo');
                      }
                  });
                  //Read the text file
@@ -86,7 +86,7 @@
          return res;
      }
 
-     function introducir_comando(command) {
+     function introducir_comando(command, envio) {
          command = quitar_tabuladores_inicio(command);
          command = quitar_espacios_inicio(command);
          if (validar_comando(command)) {
@@ -94,7 +94,7 @@
          } else if (QUIT == command.substr(0, QUIT.length)) {
              location.reload();
          } else {
-             socket.emit('stdin', command);
+             socket.emit(envio, command);
          }
      }
 
