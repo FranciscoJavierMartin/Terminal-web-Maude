@@ -7,6 +7,13 @@
      const LIST = 'ls';
      const COMANDO_NO_VALIDO = 'Comando no valido: ';
 
+     const FMOD='fmod';
+     const ENDFM='endfm';
+     const FTH='fth';
+     const ENDFTH='endfth';
+     const VIEW='view';
+     const ENDV='endv';
+
      var entradas_no_permitidas = [];
      entradas_no_permitidas.push(LOAD);
      entradas_no_permitidas.push(CHANGE_DIRECTORY);
@@ -26,6 +33,9 @@
      });
      socket.on('stdout', function(data) {
          var salida = String(data);
+
+
+         console.log(salida);
 
          if (salida.endsWith(MAUDE)) {
              salida = salida.substr(0, salida.length - MAUDE.length);
@@ -61,8 +71,8 @@
                  fileReader.addEventListener("load", function(event) {
                      var abc = event.target.result.split('\n');
                      for (var j = 0; j < abc.length; j++) {
-
-                         introducir_comando(abc[j], 'archivo');
+                         introducir_comando(abc[j], 'stdin');
+                         //introducir_comando(abc[j], 'archivo');
                      }
                  });
                  //Read the text file
