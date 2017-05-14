@@ -40,7 +40,7 @@ io.on('connection', function(socket) {
     /*var temporizadores = [];
     var temporizador_archivo;*/
 
-const tiempo=15000;
+const tiempo=150000;
 
     setTimeout(function(){
         matar_proceso('Tiempo excedido');

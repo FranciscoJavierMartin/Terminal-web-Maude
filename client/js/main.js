@@ -25,6 +25,9 @@
 
      var socket = io.connect('http://localhost:9090');
      var terminal = $('#terminal').terminal(function(command, terminal) {
+
+       terminal.set_prompt('>');
+
          introducir_comando(command, 'stdin');
      }, {
          greetings: '',
@@ -35,6 +38,7 @@
          var salida = String(data);
 
 
+       terminal.set_prompt(PROMPT);
          console.log(salida);
 
          if (salida.endsWith(MAUDE)) {
