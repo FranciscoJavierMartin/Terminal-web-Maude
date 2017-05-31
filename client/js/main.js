@@ -105,8 +105,12 @@
      }
 
      function introducir_comando(command, envio) {
-         command = quitar_tabuladores_inicio(command);
-         command = quitar_espacios_inicio(command);
+
+        while(command[0]==' '||command[0]=='\t'){
+          command = quitar_tabuladores_inicio(command);
+          command = quitar_espacios_inicio(command);
+        }
+
          if (validar_comando(command)) {
              terminal.error(COMANDO_NO_VALIDO + command);
          } else if (QUIT == command.substr(0, QUIT.length)) {
@@ -140,7 +144,12 @@
              }
          }
 
+
+
          var salida = command.substr(i, command.lengt);
+
+//salida = command.replace(/([\ \t]+(?=[\ \t])|^\s+|\s+$)/g, '');
+
          return salida;
      }
  });

@@ -1,15 +1,13 @@
 #terminal {
     display: block;
     overflow-y: auto;
-    height: 350px;
+    height: 400px;
     max-width: 1000px;
     padding: 15px;
     position: relative;
     margin: 1em auto;
     word-wrap: break-word;
     box-shadow: 0 12px 24px rgba(0, 0, 0, .66);
-
-    font-size: 20pt;
 }
 
 #files {
@@ -21,7 +19,9 @@
 }
 
 body {
-    background: lightblue;
+  padding-left: 1em;
+  padding-right: 1em;
+  background: lightblue;
 }
 
 #menu {
@@ -38,6 +38,7 @@ body {
     text-decoration: none;
     color: darkblue;
     background: cornflowerblue;
+    display: inline-block;
 }
 
 footer {
@@ -48,12 +49,55 @@ footer {
     position: relative;
 }
 
-.prompt{
-  font-size: 170px;
-  color: green;
+@media screen and (min-width: 170px){
+  footer{
+    visibility: collapse;
+  }
+
+  #menu{
+    display: none;
+  }
+
+  #fork{
+    display: none;
+  }
+
+  #terminal {
+      height: 100%;
+      width: 100%;
+      padding: 15px;
+      position: absolute;
+      margin: 0em;
+      box-shadow: none;
+      top: 0;
+      left: 0;
+  }
+
 }
 
-.cmd{
-  font-size: 20pt;
-  color: red;
+@media screen and (min-width: 1250px){
+  footer{
+    visibility: visible;
+  }
+
+  #menu{
+    display: block;
+  }
+
+  #fork{
+    display: block;
+  }
+
+  #terminal {
+      display: block;
+      overflow-y: auto;
+      height: 400px;
+      max-width: 1000px;
+      padding: 15px;
+      position: relative;
+      margin: 1em auto;
+      word-wrap: break-word;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, .66);
+  }
+
 }
