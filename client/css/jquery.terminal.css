@@ -8,6 +8,8 @@
     margin: 1em auto;
     word-wrap: break-word;
     box-shadow: 0 12px 24px rgba(0, 0, 0, .66);
+
+    font-size: 20pt;
 }
 
 .terminal .clipboard {

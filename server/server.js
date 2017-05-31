@@ -42,9 +42,9 @@ io.on('connection', function(socket) {
 
 const tiempo=150000;
 
-    setTimeout(function(){
+    /*setTimeout(function(){
         matar_proceso('Tiempo excedido');
-    },tiempo);
+    },tiempo);*/
 
     shell.on('exit', function(code, signal) {
         console.log('exit');
@@ -54,7 +54,7 @@ const tiempo=150000;
     shell['stdout'].setEncoding('ascii');
     shell['stdout'].on('data', function(data) {
         //clearTimeout(temporizadores.shift());
-    
+
 
         //clearTimeout(temporizador_archivo);
         socket.emit('stdout', data);

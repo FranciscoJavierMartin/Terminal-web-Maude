@@ -1,3 +1,17 @@
+#terminal {
+    display: block;
+    overflow-y: auto;
+    height: 350px;
+    max-width: 1000px;
+    padding: 15px;
+    position: relative;
+    margin: 1em auto;
+    word-wrap: break-word;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, .66);
+
+    font-size: 20pt;
+}
+
 #files {
     display: none;
 }
@@ -26,10 +40,20 @@ body {
     background: cornflowerblue;
 }
 
-#footer {
+footer {
     text-align: center;
     bottom: 0;
     left: 0;
     right: 0;
     position: relative;
+}
+
+.prompt{
+  font-size: 170px;
+  color: green;
+}
+
+.cmd{
+  font-size: 20pt;
+  color: red;
 }

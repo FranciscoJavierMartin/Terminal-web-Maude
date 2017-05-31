@@ -23,7 +23,7 @@
          $("#files").click();
      });
 
-     var socket = io.connect('http://localhost:9090');
+     var socket = io.connect('http://192.168.1.100:9090');
      var terminal = $('#terminal').terminal(function(command, terminal) {
 
        terminal.set_prompt('>');
@@ -47,9 +47,11 @@
 
          terminal.echo(salida);
      });
+
      socket.on('stderr', function(salida) {
          terminal.error(salida);
      });
+
      socket.on('disconnect', function() {
 
          if (!alert('Conexion perdida')) {
@@ -57,9 +59,11 @@
          }
 
      });
+
      socket.on('enable', function() {
          terminal.enable();
      });
+
      socket.on('disable', function() {
          terminal.disable();
      });
