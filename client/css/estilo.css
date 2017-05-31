@@ -2,7 +2,7 @@
     display: block;
     overflow-y: auto;
     height: 400px;
-    max-width: 1000px;
+    width: 1000px;
     padding: 15px;
     position: relative;
     margin: 1em auto;
@@ -75,7 +75,7 @@ footer {
 
 }
 
-@media screen and (min-width: 1250px){
+@media screen and (min-width: 1000px){
   footer{
     visibility: visible;
   }

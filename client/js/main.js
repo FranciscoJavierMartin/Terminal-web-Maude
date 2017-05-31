@@ -5,6 +5,7 @@
      const QUIT = 'quit';
      const CHANGE_DIRECTORY = 'cd ';
      const LIST = 'ls';
+     const PWD = 'pwd'
      const COMANDO_NO_VALIDO = 'Comando no valido: ';
 
      const FMOD='fmod';
@@ -18,6 +19,7 @@
      entradas_no_permitidas.push(LOAD);
      entradas_no_permitidas.push(CHANGE_DIRECTORY);
      entradas_no_permitidas.push(LIST);
+     entradas_no_permitidas.push(PWD);
 
      $("#fileupload").click(function() {
          $("#files").click();
