@@ -1,166 +1,121 @@
- $(function() {
-     const PROMPT = 'Maude>';
-     const MAUDE = 'Maude> ';
-     const LOAD = 'load';
-     const QUIT = 'quit';
-     const CHANGE_DIRECTORY = 'cd ';
-     const LIST = 'ls';
-     const PWD = 'pwd'
-     const COMANDO_NO_VALIDO = 'Comando no valido: ';
+const PROMPT = 'Maude> ';
+const COMANDO_NO_VALIDO = 'Comando no valido: ';
+const QUIT = 'quit';
+const entradas_no_permitidas=[
+    'load',
+    'cd ',
+    'ls',
+    'pwd'
+]
 
-     const FMOD='fmod';
-     const ENDFM='endfm';
-     const FTH='fth';
-     const ENDFTH='endfth';
-     const VIEW='view';
-     const ENDV='endv';
+//True si esta en entrada no permitida
+function validar_comando(command) {
+    var res = false;
+    var cad;
 
-     var entradas_no_permitidas = [];
-     entradas_no_permitidas.push(LOAD);
-     entradas_no_permitidas.push(CHANGE_DIRECTORY);
-     entradas_no_permitidas.push(LIST);
-     entradas_no_permitidas.push(PWD);
+    for (var i = 0; i < entradas_no_permitidas.length; i++) {
+        cad = command.substr(0, entradas_no_permitidas[i].length);
+        res = res || (cad == entradas_no_permitidas[i]);
+    }
 
-     $("#fileupload").click(function() {
+    return res;
+}
+  
+function quitar_espacios_y_tabuladores(command){
+    var i;
+
+    for(i=0;i<command.length;i++){
+        if(!(command[i]==' '||command[i]=='\t')){
+            break;
+        }
+    }
+
+    return command.substr(i,command.length);
+}
+
+function introducir_comando(command, envio, socket) {
+
+    command=quitar_espacios_y_tabuladores(command);
+
+    if (validar_comando(command)) {
+        terminal.set_prompt(PROMPT);
+        terminal.error(COMANDO_NO_VALIDO + command);
+    } else if (QUIT == command.substr(0, QUIT.length)) {
+        location.reload();
+    } else {
+        socket.emit(envio, command);
+    }
+}
+ 
+$(function() {
+     
+    $("#fileupload").click(function() {
          $("#files").click();
-     });
+    });
 
-     var socket = io.connect('http://192.168.1.100:9090');
-     var terminal = $('#terminal').terminal(function(command, terminal) {
+     //Se establece la conexion con el servidor
+    var socket = io.connect('http://192.168.1.100:9090');
 
-       terminal.set_prompt('>');
+     //La variable para interacturar con la terminal mostrada
+    var terminal = $('#terminal').terminal(function(command, terminal) {
 
-         introducir_comando(command, 'stdin');
-     }, {
-         greetings: '',
+    terminal.set_prompt('>');
+
+    introducir_comando(command, 'stdin',socket);
+    }, {
+         greetings: '', //Hay que dejarla porque sino sale el por defecto
          prompt: PROMPT,
          exit: false
-     });
-     socket.on('stdout', function(data) {
-         var salida = String(data);
+    });
 
+    socket.on('stdout', function(data) {
+        var salida = String(data);
 
-       terminal.set_prompt(PROMPT);
-         console.log(salida);
+        terminal.set_prompt(PROMPT);
 
-         if (salida.endsWith(MAUDE)) {
-             salida = salida.substr(0, salida.length - MAUDE.length);
-         }
+        if (salida.endsWith(PROMPT)) {
+             salida = salida.substr(0, salida.length - PROMPT.length);
+        }
 
-         terminal.echo(salida);
-     });
+        terminal.echo(salida);
+    });
 
-     socket.on('stderr', function(salida) {
+    socket.on('stderr', function(salida) {
          terminal.error(salida);
-     });
+    });
 
-     socket.on('disconnect', function() {
+    socket.on('disconnect', function() {
+        alert('Conexion perdida')
+    });
 
-         if (!alert('Conexion perdida')) {
-             location.reload();
-         }
-
-     });
-
-     socket.on('enable', function() {
+    socket.on('enable', function() {
          terminal.enable();
-     });
+    });
 
-     socket.on('disable', function() {
+    socket.on('disable', function() {
          terminal.disable();
-     });
+    });
 
      //COMIENZA LA SUBIDA DE ARCHIVOS
-     if (window.File && window.FileList && window.FileReader) {
+    if (window.File && window.FileList && window.FileReader) {
          var filesInput = document.getElementById("files");
-         filesInput.addEventListener("change", function(event) {
+        filesInput.addEventListener("change", function(event) {
              var files = event.target.files; //FileList object
-             for (var i = 0; i < files.length; i++) {
-                 var file = files[i];
-                 var fileReader = new FileReader();
-                 fileReader.addEventListener("load", function(event) {
-                     var abc = event.target.result.split('\n');
-                     for (var j = 0; j < abc.length; j++) {
-                         introducir_comando(abc[j], 'stdin');
-                     }
-                 });
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var fileReader = new FileReader();
+                fileReader.addEventListener("load", function(event) {
+                    var comandos = event.target.result.split('\n');
+                    for (var j = 0; j < comandos.length; j++) {
+                       introducir_comando(comandos[j], 'stdin',socket);
+                    }
+                });
                  //Read the text file
-                 fileReader.readAsText(file);
-             }
-         });
-     } else {
-         alert("Your browser does not support File API");
-     }
-
-     //True si esta en entrada no permitida
-     function validar_comando(command) {
-         var res = false;
-         var cad;
-
-         for (var i = 0; i < entradas_no_permitidas.length; i++) {
-             cad = command.substr(0, entradas_no_permitidas[i].length);
-             res = res || (cad == entradas_no_permitidas[i]);
-         }
-
-         return res;
-     }
-
-     function introducir_comando(command, envio) {
-
-        command=quitar_espacios_y_tabuladores(command);
-
-         if (validar_comando(command)) {
-           terminal.set_prompt(PROMPT);
-             terminal.error(COMANDO_NO_VALIDO + command);
-         } else if (QUIT == command.substr(0, QUIT.length)) {
-             location.reload();
-         } else {
-             socket.emit(envio, command);
-         }
-     }
-
-     function quitar_espacios_inicio(command) {
-         var a = command.slice('');
-         var i;
-
-         for (i = 0; i < a.length; i++) {
-             if (a[i] != ' ') {
-                 break;
-             }
-         }
-
-         var salida = command.substr(i, command.lengt);
-         return salida;
-     }
-
-     function quitar_tabuladores_inicio(command) {
-         var a = command.slice('');
-         var i;
-
-         for (i = 0; i < a.length; i++) {
-             if (a[i] != '\t') {
-                 break;
-             }
-         }
-
-
-
-         var salida = command.substr(i, command.lengt);
-
-         return salida;
-     }
-
-     function quitar_espacios_y_tabuladores(command){
-       var i;
-
-          for(i=0;i<command.length;i++){
-            if(command[i]==' '||command[i]=='\t'){
-
-            }else{
-              break;
+                fileReader.readAsText(file);
             }
-          }
+        });
+    } else {
+        alert("Your browser does not support File API");
+    }
 
-       return command.substr(i,command.length);
-     }
  });
