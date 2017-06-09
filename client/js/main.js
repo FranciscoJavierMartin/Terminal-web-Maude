@@ -85,7 +85,9 @@ $(function() {
     });
 
     socket.on('disconnect', function() {
-        alert('Conexion perdida')
+        if(!alert('Conexion perdida')){
+            location.reload();
+        }
     });
 
     socket.on('enable', function() {
