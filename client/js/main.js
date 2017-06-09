@@ -82,7 +82,6 @@
                      var abc = event.target.result.split('\n');
                      for (var j = 0; j < abc.length; j++) {
                          introducir_comando(abc[j], 'stdin');
-                         //introducir_comando(abc[j], 'archivo');
                      }
                  });
                  //Read the text file
@@ -107,11 +106,6 @@
      }
 
      function introducir_comando(command, envio) {
-
-        /*while(command[0]==' '||command[0]=='\t'){
-          command = quitar_tabuladores_inicio(command);
-          command = quitar_espacios_inicio(command);
-        }*/
 
         command=quitar_espacios_y_tabuladores(command);
 
@@ -152,8 +146,6 @@
 
 
          var salida = command.substr(i, command.lengt);
-
-//salida = command.replace(/([\ \t]+(?=[\ \t])|^\s+|\s+$)/g, '');
 
          return salida;
      }

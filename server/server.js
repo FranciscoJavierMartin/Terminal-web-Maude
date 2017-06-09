@@ -15,7 +15,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var spawn = require('child_process', ['', opciones]).spawn;
-//var spawn = require('child_process').spawnSync;
+
 //Signal a enviar
 const senal = 'SIGKILL';
 
@@ -34,13 +34,10 @@ server.listen(puerto, function() {
 
 io.on('connection', function(socket) {
     console.log('Cliente conectado ');
-    //var shell = spawn('/bin/bash');
     var shell = spawn('/usr/bin/maude');
     var stdin = shell.stdin;
-    /*var temporizadores = [];
-    var temporizador_archivo;*/
 
-const tiempo=150000;
+    const tiempo=150000;
 
     /*setTimeout(function(){
         matar_proceso('Tiempo excedido');
@@ -53,51 +50,17 @@ const tiempo=150000;
 
     shell['stdout'].setEncoding('ascii');
     shell['stdout'].on('data', function(data) {
-        //clearTimeout(temporizadores.shift());
-
-
-        //clearTimeout(temporizador_archivo);
         socket.emit('stdout', data);
     });
 
     shell['stderr'].setEncoding('ascii');
     shell['stderr'].on('data', function(data) {
-        //clearTimeout(temporizadores.shift());
-         //clearTimeout(temporizador_archivo);
         socket.emit('stderr', data);
     });
 
     socket.on('stdin', function(command) {
-
-        /*temporizadores.push(setTimeout(function() {
-            matar_proceso('Tiempo excedido');
-        }, timer_ms));*/
-
         stdin.write(command + '\n') || socket.emit('disable');
     });
-
-    /*socket.on('archivo', function(command) {
-    console.log('Cad '+command.substring(0,FMOD.length));
-        if(command.substring(0,FMOD.length)==FMOD){
-            console.log('Entra');
-            temporizador_archivo=setTimeout(function () {
-        console.log('Salida: ' + 'msg');
-        try {
-            shell.kill(senal);
-        } catch (ex) {
-            console.log('Excep: ' + String(ex));
-        }
-    },timer_archivo);
-        }else if(command.substring(0,ENDFM.length)==ENDFM){
-           clearTimeout(temporizador_archivo);
-        }
-
-        /*temporizadores.push(setTimeout(function() {
-            matar_proceso('Tiempo excedido');
-        }, timer_ms));*/
-
-        /* stdin.write(command + '\n') || socket.emit('disable');
-    });*/
 
     stdin.on('drain', function() {
         socket.emit('enable');
