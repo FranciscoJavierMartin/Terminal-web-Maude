@@ -1161,6 +1161,10 @@
                 self['delete'](1);
                 return false;
             },
+            'CTRL+C': function(){
+                location.reload();
+                return false;
+            },
             'DELETE': function() {
                 self['delete'](1);
                 return true;
@@ -1264,7 +1268,7 @@
                 return false;
             },
             'CTRL+X': return_true,
-            'CTRL+C': return_true,
+            //'CTRL+C': return_true,
             'CTRL+T': return_true,
             'CTRL+Y': function() {
                 if (kill_text !== '') {
