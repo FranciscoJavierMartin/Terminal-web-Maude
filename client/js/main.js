@@ -20,7 +20,8 @@ function validar_comando(command) {
 
     return res;
 }
-  
+
+//Elimina los espacios y los tabuladores del inicio del comando
 function quitar_espacios_y_tabuladores(command){
     var i;
 
@@ -33,6 +34,7 @@ function quitar_espacios_y_tabuladores(command){
     return command.substr(i,command.length);
 }
 
+//Envia el comando al servidor mediante el socket y a traves de la entrada seleccionada
 function introducir_comando(command, envio, socket) {
 
     command=quitar_espacios_y_tabuladores(command);
@@ -54,23 +56,25 @@ $(function() {
          $("#files").click();
     });
 
+    //Mensaje que emitira el alert cuando se produzca una desconexion
     var mensaje='Desconexion';
 
-     //Se establece la conexion con el servidor
+    //Se establece la conexion con el servidor
     var socket = io.connect('http://192.168.1.100:9090');
 
-     //La variable para interacturar con la terminal mostrada
+    //La variable para interacturar con la terminal mostrada
     var terminal = $('#terminal').terminal(function(command, terminal) {
 
         terminal.set_prompt('>');
 
-    introducir_comando(command, 'stdin',socket);
+        introducir_comando(command, 'stdin',socket);
     }, {
          greetings: '', //Hay que dejarla porque sino sale el por defecto
          prompt: PROMPT,
          exit: false
     });
 
+    //Recibe la salida estandar del proceso Maude y la muestra en el terminal
     socket.on('stdout', function(data) {
         var salida = String(data);
 
@@ -83,10 +87,12 @@ $(function() {
         terminal.echo(salida);
     });
 
+    //Recibe la salida de error del proceso Maude y la muestra en el terminal
     socket.on('stderr', function(salida) {
          terminal.error(salida);
     });
 
+    //Muestra un mensaje de alerta y cuando se cierra fuerza la recarga de la pagina
     socket.on('disconnect', function() {
         if(!alert(mensaje)){
             location.reload();
@@ -101,11 +107,12 @@ $(function() {
          terminal.disable();
     });
 
+    //Actualiza el mensaje que se mostrara en el fin de conexion
     socket.on('mensajeFin',function(msg){
         mensaje=msg;
     });
 
-     //COMIENZA LA SUBIDA DE ARCHIVOS
+    //COMIENZA LA SUBIDA DE ARCHIVOS
     if (window.File && window.FileList && window.FileReader) {
         var filesInput = document.getElementById("files");
         filesInput.addEventListener("change", function(event) {
@@ -119,7 +126,7 @@ $(function() {
                        introducir_comando(comandos[j], 'stdin',socket);
                     }
                 });
-                 //Read the text file
+                //Read the text file
                 fileReader.readAsText(file);
             }
         });
