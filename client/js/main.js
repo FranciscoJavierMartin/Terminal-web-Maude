@@ -119,15 +119,23 @@ $(function() {
             var files = event.target.files; //FileList object
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
-                var fileReader = new FileReader();
-                fileReader.addEventListener("load", function(event) {
-                    var comandos = event.target.result.split('\n');
-                    for (var j = 0; j < comandos.length; j++) {
+
+                //Comprueba que el fichero es de texto plano
+                if(file['type'] == 'text/plain'){
+                    var fileReader = new FileReader();
+                    fileReader.addEventListener("load", function(event) {
+                        var comandos = event.target.result.split('\n');
+                        for (var j = 0; j < comandos.length; j++) {
                        introducir_comando(comandos[j], 'stdin',socket);
                     }
-                });
-                //Read the text file
-                fileReader.readAsText(file);
+                    });
+                    //Read the text file
+                    fileReader.readAsText(file);
+                }else{
+                    alert('Fichero no valido');
+                }
+
+                
             }
         });
     } else {
