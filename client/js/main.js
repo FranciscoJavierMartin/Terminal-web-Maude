@@ -49,9 +49,12 @@ function introducir_comando(command, envio, socket) {
  
 $(function() {
      
+    //Cuando se hace click en el enlace se hace click en la entrada de archivos
     $("#fileupload").click(function() {
          $("#files").click();
     });
+
+    var mensaje='Desconexion';
 
      //Se establece la conexion con el servidor
     var socket = io.connect('http://192.168.1.100:9090');
@@ -59,7 +62,7 @@ $(function() {
      //La variable para interacturar con la terminal mostrada
     var terminal = $('#terminal').terminal(function(command, terminal) {
 
-    terminal.set_prompt('>');
+        terminal.set_prompt('>');
 
     introducir_comando(command, 'stdin',socket);
     }, {
@@ -85,7 +88,7 @@ $(function() {
     });
 
     socket.on('disconnect', function() {
-        if(!alert('Conexion perdida')){
+        if(!alert(mensaje)){
             location.reload();
         }
     });
@@ -98,11 +101,15 @@ $(function() {
          terminal.disable();
     });
 
+    socket.on('mensajeFin',function(msg){
+        mensaje=msg;
+    });
+
      //COMIENZA LA SUBIDA DE ARCHIVOS
     if (window.File && window.FileList && window.FileReader) {
-         var filesInput = document.getElementById("files");
+        var filesInput = document.getElementById("files");
         filesInput.addEventListener("change", function(event) {
-             var files = event.target.files; //FileList object
+            var files = event.target.files; //FileList object
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
                 var fileReader = new FileReader();
