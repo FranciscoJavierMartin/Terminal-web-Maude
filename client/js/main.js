@@ -10,32 +10,22 @@ const entradas_no_permitidas=[
 
 //True si esta en entrada no permitida
 function validar_comando(command) {
-    var res = false;
-    var cad;
-
-    for (var i = 0; i < entradas_no_permitidas.length; i++) {
-        cad = command.substr(0, entradas_no_permitidas[i].length);
-        res = res || (cad == entradas_no_permitidas[i]);
-    }
-
-    return res;
+    return -1!=entradas_no_permitidas.indexOf(command);
 }
 
 //Elimina los espacios y los tabuladores del inicio del comando
 function quitar_espacios_y_tabuladores(command){
-    var i;
+    var i=0;
 
-    for(i=0;i<command.length;i++){
-        if(!(command[i]==' '||command[i]=='\t')){
-            break;
-        }
+    while(i<command.length&&(command[i]==' '||command[i]=='\t')){
+        i++;
     }
 
     return command.substr(i,command.length);
 }
 
 //Envia el comando al servidor mediante el socket y a traves de la entrada seleccionada
-function introducir_comando(command, envio, socket) {
+function introducir_comando(command, envio, socket,terminal) {
 
     command=quitar_espacios_y_tabuladores(command);
 
@@ -60,14 +50,14 @@ $(function() {
     var mensaje='Desconexion';
 
     //Se establece la conexion con el servidor
-    var socket = io.connect('http://192.168.1.100:9090');
+    var socket = io.connect('http://192.168.1.102:9090');
 
     //La variable para interacturar con la terminal mostrada
     var terminal = $('#terminal').terminal(function(command, terminal) {
 
         terminal.set_prompt('>');
 
-        introducir_comando(command, 'stdin',socket);
+        introducir_comando(command, 'stdin',socket,terminal);
     }, {
          greetings: '', //Hay que dejarla porque sino sale el por defecto
          prompt: PROMPT,
@@ -89,7 +79,7 @@ $(function() {
 
     //Recibe la salida de error del proceso Maude y la muestra en el terminal
     socket.on('stderr', function(salida) {
-         terminal.error(salida);
+         terminal.error(String(salida));
     });
 
     //Muestra un mensaje de alerta y cuando se cierra fuerza la recarga de la pagina
@@ -126,8 +116,8 @@ $(function() {
                     fileReader.addEventListener("load", function(event) {
                         var comandos = event.target.result.split('\n');
                         for (var j = 0; j < comandos.length; j++) {
-                       introducir_comando(comandos[j], 'stdin',socket);
-                    }
+                             introducir_comando(comandos[j], 'stdin',socket,terminal);
+                        }   
                     });
                     //Read the text file
                     fileReader.readAsText(file);
