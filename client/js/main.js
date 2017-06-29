@@ -50,7 +50,7 @@ $(function() {
     var mensaje='Desconexion';
 
     //Se establece la conexion con el servidor
-    var socket = io.connect('http://192.168.1.102:9090');
+    var socket = io.connect('http://165.227.129.180');
 
     //La variable para interacturar con la terminal mostrada
     var terminal = $('#terminal').terminal(function(command, terminal) {
