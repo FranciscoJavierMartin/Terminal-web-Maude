@@ -10,7 +10,15 @@ const entradas_no_permitidas=[
 
 //True si esta en entrada no permitida
 function validar_comando(command) {
-    return -1!=entradas_no_permitidas.indexOf(command);
+    var res = false;
+    var cad;
+
+    for (var i = 0; i < entradas_no_permitidas.length; i++) {
+        cad = command.substr(0, entradas_no_permitidas[i].length);
+        res = res || (cad == entradas_no_permitidas[i]);
+    }
+
+    return res;
 }
 
 //Elimina los espacios y los tabuladores del inicio del comando
